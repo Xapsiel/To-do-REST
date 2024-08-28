@@ -1,29 +1,59 @@
 package main
 
 import (
-	"net/http"
+	"log"
+	"os"
+	"strconv"
+	"time"
 
-	"test_case/internal/app"
-	"test_case/internal/db"
+	"test_case/internal/handler"
+	"test_case/internal/repo"
+	envreader "test_case/pkg/envReader"
+	"test_case/pkg/server"
 
 	"github.com/gorilla/mux"
 )
 
-func main() {
-	run()
-	// ys := speller.NewSpeller()
-	// s, e := ys.CheckText("mosqow is sity", "en")
-	// fmt.Println(s, e)
-}
-func init() {
-	_ = db.Database{}
-}
-func run() {
-	router := mux.NewRouter()
-	router.HandleFunc("/add", app.Add)
-	router.HandleFunc("/signIn", app.SignIn).Methods("POST")
-	router.HandleFunc("/signUp", app.SignUp).Methods("POST")
-	router.HandleFunc("/get/{userID}", app.Get).Methods("GET")
-	http.ListenAndServe(":8080", router)
+var er *envreader.EnvReader
 
+func init() {
+	var err error
+	er, err = envreader.New()
+	if err != nil {
+	}
+	_ = repo.Repo{}
+
+}
+
+func main() {
+	// Чтение конфигурации
+	port := er.GetEnvOrDefault("PORT", "8080")
+	timeoutSeconds, _ := strconv.Atoi(er.GetEnvOrDefault("TIMEOUT_SECONDS", "60"))
+
+	// Создание нового сервера
+	s := server.New(port, time.Duration(timeoutSeconds)*time.Second)
+
+	// Регистрация маршрутов
+	registerRoutes(s.Router)
+
+	// Запуск сервера
+	log.Printf("Starting server on port %s", port)
+	if err := s.Run(); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
+}
+
+func registerRoutes(router *mux.Router) {
+	router.HandleFunc("/add", handler.Add)
+	router.HandleFunc("/get/{userID}", handler.Get).Methods("GET")
+	router.HandleFunc("/signIn", handler.SignIn).Methods("POST")
+	router.HandleFunc("/signUp", handler.SignUp).Methods("POST")
+}
+
+func GetEnvOrDefault(key, defaultValue string) string {
+
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return defaultValue
 }

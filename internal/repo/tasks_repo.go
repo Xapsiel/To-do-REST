@@ -2,42 +2,40 @@ package repo
 
 import (
 	"fmt"
+	"test_case/pkg/errors"
 )
 
-func Add(userID int, content string) (int, error) {
-	_, _, err := FindUserById(userID)
+func (r *Repo) Add(userID int, content string) (int, error) {
+	_, _, err := r.FindUserById(userID)
 	if err != nil {
 		return -1, err
 	}
 
-	if err != nil {
-		return -1, err
-	}
 	query := fmt.Sprintf("INSERT INTO tasks (userid,content) VALUES('%d','%s')", userID, content)
-	_, err = DataBase.DB.Exec(query)
+	_, err = r.DB.Exec(query)
 	if err != nil {
-		return -1, err
+		return -1, errors.New("Add func", err.Error())
 	}
-	id, err := findLastTasks()
+	id, err := r.findLastTasks()
 	if err != nil {
 		return -1, err
 	}
 	return int(id), nil
 
 }
-func Get(userID int) (map[int]string, error) {
+func (r *Repo) Get(userID int) (map[int]string, error) {
 	result := make(map[int]string)
 	query := fmt.Sprintf("SELECT content FROM tasks WHERE userid='%d'", userID)
-	rows, err := DataBase.DB.Query(query)
+	rows, err := r.DB.Query(query)
 	if err != nil {
-		return map[int]string{}, err
+		return map[int]string{}, errors.New("Get func", err.Error())
 	}
 	defer rows.Close()
 	id := 1
 	for rows.Next() {
 		var content string
 		if err := rows.Scan(&content); err != nil {
-			return map[int]string{}, err
+			return map[int]string{}, errors.New("Get func", err.Error())
 		}
 		result[id] = content
 
@@ -47,19 +45,20 @@ func Get(userID int) (map[int]string, error) {
 	return result, nil
 
 }
-func findLastTasks() (int64, error) {
+func (r *Repo) findLastTasks() (int64, error) {
 	query := "SELECT max(id) from tasks"
-	rows, err := DataBase.DB.Query(query)
+	rows, err := r.DB.Query(query)
 	if err != nil {
-		return -1, err
+		return -1, errors.New("findLastTasks func()", err.Error())
 	}
 	defer rows.Close()
+	var id int64
+
 	for rows.Next() {
-		var id int64
 		if err := rows.Scan(&id); err != nil {
-			return -1, err
+			return -1, errors.New("findLastTasks func()", err.Error())
 		}
 	}
-	return -1, err
+	return id, nil
 
 }

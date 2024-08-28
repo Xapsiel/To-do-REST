@@ -1,21 +1,25 @@
 package task
 
-import "test_case/internal/repo"
+import (
+	"test_case/internal/repo"
+)
 
 type Task struct {
 	Id      int    `json:"id"`
-	userID  int    `json:"userID"`
+	UserID  int    `json:"userID"`
 	Content string `json:"content"`
+	repo    *repo.Repo
 }
 
-func NewTask() *Task {
-	return &Task{}
+func NewTask(userid int, content string) *Task {
+	return &Task{UserID: userid, Content: content, repo: repo.New()}
 }
 
-func (t *Task) Add(userid int, content string) (int, error) {
-	return repo.Add(userid, content)
+func (t *Task) Add() (int, error) {
+	return t.repo.Add(t.UserID, t.Content)
 }
 
 func (t *Task) Get(userid int) (map[int]string, error) {
-	return repo.Get(userid)
+
+	return t.repo.Get(userid)
 }
