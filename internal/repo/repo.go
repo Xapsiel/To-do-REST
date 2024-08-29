@@ -46,6 +46,7 @@ func init() {
 	dbName := repoobj.name
 	err := repoobj.createDB(dbName, connstr)
 	if err != nil {
+		fmt.Println(err)
 		if e, ok := err.(errors.Errors); ok {
 			log.Println(e.Print())
 		}
@@ -56,6 +57,8 @@ func init() {
 
 	err = repoobj.createTable(dbName, connstr, query)
 	if err != nil {
+		fmt.Println(err)
+
 		if e, ok := err.(errors.Errors); ok {
 			log.Println(e.Print())
 		}
@@ -77,8 +80,9 @@ func (r *Repo) createDB(dbName, connstr string) error {
 	var err error
 	fmt.Println(1)
 	r.DB, err = sql.Open("postgres", connstr)
-	fmt.Println(2)
 	if err != nil {
+		fmt.Println(2, err)
+
 		return errors.New("createDB func", err.Error(), http.StatusServiceUnavailable)
 
 	}
