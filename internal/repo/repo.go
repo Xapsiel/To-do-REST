@@ -30,78 +30,64 @@ func New() *Repo {
 		return Repoobj
 	}
 	en := envreader.EnvReader{}
-	config := configDB{}
-	config.name = en.GetEnvOrDefault("DBNAME", "test_case")
-	config.user = en.GetEnvOrDefault("DBUSER", "postgres")
-	config.password = en.GetEnvOrDefault("DBPASSWORD", "postgres")
-	config.sslmode = en.GetEnvOrDefault("DBSSLMODE", "disable")
+	config := configDB{
+		name:     en.GetEnvOrDefault("DBNAME", "test_case"),
+		user:     en.GetEnvOrDefault("DBUSER", "postgres"),
+		password: en.GetEnvOrDefault("DBPASSWORD", "postgres"),
+		sslmode:  en.GetEnvOrDefault("DBSSLMODE", "disable"),
+	}
 	fmt.Println(config)
-	return &Repo{DB: &sql.DB{}, configDB: configDB{name: config.name, user: config.user, password: config.password, sslmode: config.sslmode}}
-}
 
+	connstr := fmt.Sprintf("user=%s password=%s sslmode=%s", config.user, config.password, config.sslmode)
+	db, err := sql.Open("postgres", connstr)
+	if err != nil {
+		log.Fatalf("Failed to connect to the database: %v", err)
+	}
+
+	Repoobj = &Repo{DB: db, configDB: config}
+	return Repoobj
+}
 func init() {
 	envreader.Init()
 	repoobj := New()
-	connstr := fmt.Sprintf("user=%s password=%s sslmode=%s ", repoobj.user, repoobj.password, repoobj.sslmode)
+
 	dbName := repoobj.name
-	err := repoobj.createDB(dbName, connstr)
-	if err != nil {
-		fmt.Println(err)
-		if e, ok := err.(errors.Errors); ok {
-			log.Println(e.Print())
-		}
+	if err := repoobj.createDB(dbName); err != nil {
+		log.Println(err)
 		return
 	}
-	connstr += "dbname=" + dbName
-	query := "CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, login TEXT NOT NULL UNIQUE,password TEXT NOT NULL) "
 
-	err = repoobj.createTable(dbName, connstr, query)
-	if err != nil {
-		fmt.Println(err)
-
-		if e, ok := err.(errors.Errors); ok {
-			log.Println(e.Print())
-		}
-		return
+	// Убедитесь, что база данных доступна
+	if err := repoobj.DB.Ping(); err != nil {
+		log.Fatalf("Database is not reachable: %v", err)
 	}
-	query = "CREATE TABLE IF NOT EXISTS tasks(id SERIAL PRIMARY KEY,userid INTEGER REFERENCES users (id) NOT NULL,content TEXT NOT NULL) "
-	err = repoobj.createTable(dbName, connstr, query)
-	if err != nil {
-		if e, ok := err.(errors.Errors); ok {
-			log.Println(e.Print())
+
+	// Создание таблиц
+	queries := []string{
+		"CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, login TEXT NOT NULL UNIQUE, password TEXT NOT NULL)",
+		"CREATE TABLE IF NOT EXISTS tasks(id SERIAL PRIMARY KEY, userid INTEGER REFERENCES users (id) NOT NULL, content TEXT NOT NULL)",
+	}
+
+	for _, query := range queries {
+		if err := repoobj.createTable(query); err != nil {
+			log.Println(err)
+			return
 		}
-		return
 	}
 	Repoobj = repoobj
-	// Optionally, you could check if the database is reachabl
 }
 
-func (r *Repo) createDB(dbName, connstr string) error {
-	var err error
-	fmt.Println(1)
-	r.DB, err = sql.Open("postgres", connstr)
-	if err != nil {
-		fmt.Println(2, err)
-
-		return errors.New("createDB func", err.Error(), http.StatusServiceUnavailable)
-
-	}
+func (r *Repo) createDB(dbName string) error {
 	dublicate := fmt.Sprintf("pq: database \"%s\" already exists", dbName)
-	_, err = r.DB.Exec("create database " + dbName)
+	_, err := r.DB.Exec("CREATE DATABASE " + dbName)
 	if err != nil && err.Error() != dublicate {
 		return errors.New("createDB func", err.Error(), http.StatusServiceUnavailable)
 	}
 	return nil
 }
 
-func (r *Repo) createTable(dbName, connstr, query string) error {
-	var err error
-
-	r.DB, err = sql.Open("postgres", connstr)
-	if err != nil {
-		return errors.New("createTable func", err.Error(), http.StatusServiceUnavailable)
-	}
-	_, err = r.DB.Exec(query)
+func (r *Repo) createTable(query string) error {
+	_, err := r.DB.Exec(query)
 	if err != nil {
 		return errors.New("createTable func", err.Error(), http.StatusServiceUnavailable)
 	}
