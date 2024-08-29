@@ -33,7 +33,7 @@ func New() *Repo {
 	config := configDB{
 		name:     en.GetEnvOrDefault("DBNAME", "test_case"),
 		user:     en.GetEnvOrDefault("DBUSER", "postgres"),
-		password: en.GetEnvOrDefault("DBPASSWORD", "postgres"),
+		password: en.GetEnvOrDefault("DBPASSWORD", "ButterSQL_3301"),
 		sslmode:  en.GetEnvOrDefault("DBSSLMODE", "disable"),
 	}
 	fmt.Println(config)

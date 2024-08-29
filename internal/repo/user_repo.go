@@ -11,6 +11,7 @@ func (r *Repo) CreateUser(name string, password string) (int64, bool, error) {
 	query := fmt.Sprintf("INSERT INTO users (login, password) VALUES ('%s','%s')", name, password)
 	_, err := r.DB.Exec(query)
 	if err != nil {
+		fmt.Println(err)
 		return -1, false, errors.New("CreateUser func", "This user already exists", http.StatusServiceUnavailable)
 	}
 	id, _, err := r.FindUser(name, password)
