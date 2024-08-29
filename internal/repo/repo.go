@@ -31,9 +31,10 @@ func New() *Repo {
 	}
 	en := envreader.EnvReader{}
 	config := configDB{
+		//Home277353
 		name:     en.GetEnvOrDefault("DBNAME", "test_case"),
 		user:     en.GetEnvOrDefault("DBUSER", "postgres"),
-		password: en.GetEnvOrDefault("DBPASSWORD", "ButterSQL_3301"),
+		password: en.GetEnvOrDefault("DBPASSWORD", ""),
 		sslmode:  en.GetEnvOrDefault("DBSSLMODE", "disable"),
 	}
 	fmt.Println(config)
