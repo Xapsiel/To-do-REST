@@ -41,7 +41,7 @@ func (ys *YaSpeller) CheckText(text string, lang string) (string, error) {
 	for _, word := range splitText {
 		newtext, err := ys.CheckWord(word, lang)
 		if err != nil {
-			return "", err
+			return text, err
 		}
 		result += " " + newtext
 	}
@@ -57,7 +57,7 @@ func (ys *YaSpeller) CheckWord(text string, lang string) (string, error) {
 	url := fmt.Sprintf("%s%s", ys.host, ys.url)
 	resp, err := client.Post(url+"?text="+text, "text/plain", nil)
 	if err != nil {
-		return "", errors.New("Post requests in YS", err.Error())
+		return text, errors.New("Post requests in YS", err.Error(), http.StatusServiceUnavailable)
 	}
 	defer resp.Body.Close()
 
@@ -65,13 +65,13 @@ func (ys *YaSpeller) CheckWord(text string, lang string) (string, error) {
 	body, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		return "", errors.New("Reading request body", err.Error())
+		return text, errors.New("Reading request body", err.Error(), http.StatusServiceUnavailable)
 	}
 	var spell []speller
 
 	err = json.Unmarshal(body, &spell)
 	if err != nil {
-		return "", errors.New("Unmarsling from json", err.Error())
+		return text, errors.New("Unmarsling from json", err.Error(), http.StatusServiceUnavailable)
 	}
 	// Выводим ответ
 	if len(spell) == 0 {

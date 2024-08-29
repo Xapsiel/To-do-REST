@@ -1,0 +1,30 @@
+version: '3'
+services:
+
+  backend:
+    image: xapsiel3301/todo
+    container_name: 'backend'  # Удалите пробел здесь
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=postgres  
+      - DB_PASSWORD=postgres
+      - DB_NAME=postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "8081:5432"
+ 
+volumes:
+  db-data:
+networks:
+  back_net:
+    driver: host

@@ -1,6 +1,7 @@
 package envreader
 
 import (
+	"net/http"
 	"os"
 	"test_case/pkg/errors"
 
@@ -20,7 +21,7 @@ func New(filenames ...string) (*EnvReader, error) {
 	if err != nil {
 		err = godotenv.Load()
 		if err != nil {
-			return &EnvReader{}, errors.New(".env loading", err.Error())
+			return &EnvReader{}, errors.New(".env loading", err.Error(), http.StatusServiceUnavailable)
 		}
 	}
 	return &EnvReader{}, nil

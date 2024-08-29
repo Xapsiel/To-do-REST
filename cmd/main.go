@@ -9,6 +9,7 @@ import (
 	"test_case/internal/handler"
 	"test_case/internal/repo"
 	envreader "test_case/pkg/envReader"
+	"test_case/pkg/errors"
 	"test_case/pkg/server"
 
 	"github.com/gorilla/mux"
@@ -20,6 +21,10 @@ func init() {
 	var err error
 	er, err = envreader.New()
 	if err != nil {
+		if e, ok := err.(errors.Errors); ok {
+			log.Println(e.Print())
+		}
+		return
 	}
 	_ = repo.Repo{}
 
@@ -38,8 +43,12 @@ func main() {
 
 	// Запуск сервера
 	log.Printf("Starting server on port %s", port)
-	if err := s.Run(); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+	err := s.Run()
+	if err != nil {
+		if e, ok := err.(errors.Errors); ok {
+
+			log.Println(e.Print())
+		}
 	}
 }
 
