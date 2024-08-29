@@ -34,7 +34,7 @@ func New() *Repo {
 		//Home277353
 		name:     en.GetEnvOrDefault("DBNAME", "test_case"),
 		user:     en.GetEnvOrDefault("DBUSER", "postgres"),
-		password: en.GetEnvOrDefault("DBPASSWORD", ""),
+		password: en.GetEnvOrDefault("DBPASSWORD", "postgres"),
 		sslmode:  en.GetEnvOrDefault("DBSSLMODE", "disable"),
 	}
 	fmt.Println(config)
@@ -82,6 +82,7 @@ func (r *Repo) createDB(dbName string) error {
 	dublicate := fmt.Sprintf("pq: database \"%s\" already exists", dbName)
 	_, err := r.DB.Exec("CREATE DATABASE " + dbName)
 	if err != nil && err.Error() != dublicate {
+		fmt.Println(err, "1")
 		return errors.New("createDB func", err.Error(), http.StatusServiceUnavailable)
 	}
 	return nil
