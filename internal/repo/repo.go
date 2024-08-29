@@ -44,6 +44,10 @@ func New() *Repo {
 }
 
 func init() {
+	SetupDB()
+	// Optionally, you could check if the database is reachabl
+}
+func SetupDB() {
 	envreader.Init()
 	repoobj := New()
 	connstr := fmt.Sprintf("host=%s port=%s user=%s dbname=postgres password=%s sslmode=%s ", repoobj.host, repoobj.port, repoobj.user, repoobj.password, repoobj.sslmode)
@@ -74,7 +78,6 @@ func init() {
 		return
 	}
 	Repoobj = repoobj
-	// Optionally, you could check if the database is reachabl
 }
 
 func (r *Repo) createDB(dbName, connstr string) error {
@@ -103,5 +106,20 @@ func (r *Repo) createTable(dbName, connstr, query string) error {
 	if err != nil {
 		return errors.New("createTable func", err.Error(), http.StatusServiceUnavailable)
 	}
+	return nil
+}
+
+func (r *Repo) RecreateDB(db string) error {
+	connstr := fmt.Sprintf("host=%s port=%s user=%s dbname=postgres password=%s sslmode=%s ", r.host, r.port, r.user, r.password, r.sslmode)
+	var err error
+	r.DB, err = sql.Open("postgres", connstr)
+	if err != nil {
+		return err
+	}
+	_, err = r.DB.Exec(fmt.Sprintf("DROP DATABASE %s WITH (FORCE)", db))
+	if err != nil {
+		return err
+	}
+	SetupDB()
 	return nil
 }

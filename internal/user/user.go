@@ -28,22 +28,15 @@ func New(name string, password string) *User {
 	return &User{Login: name, Password: password, repo: repo.New()}
 }
 func (u *User) SignUp() (*User, error) {
-	id, err := u.createUser(u.Login, hashpasswd(u.Password))
+	id, err := u.repo.CreateUser(u.Login, hashpasswd(u.Password))
 	if err != nil {
 		return &User{}, err
 	}
-	return &User{ID: id, Login: u.Login, repo: repo.New()}, nil
+	return &User{ID: int(id), Login: u.Login}, nil
 }
 
-func (u *User) createUser(name string, password string) (int, error) {
-	id, ok, err := u.repo.CreateUser(name, password)
-	if !ok {
-		return -1, err
-	}
-	return int(id), nil
-}
 func (u *User) SignIn() (*User, error) {
-	id, _, err := u.repo.FindUser(u.Login, hashpasswd(u.Password))
+	id, err := u.repo.FindUser(u.Login, hashpasswd(u.Password))
 	if err != nil {
 		return &User{}, err
 

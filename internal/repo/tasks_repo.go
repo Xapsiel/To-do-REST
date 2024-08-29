@@ -7,7 +7,7 @@ import (
 )
 
 func (r *Repo) Add(userID int, content string) (int, error) {
-	_, _, err := r.FindUserById(userID)
+	_, err := r.FindUserById(userID)
 	if err != nil {
 		return -1, err
 	}
