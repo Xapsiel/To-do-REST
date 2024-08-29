@@ -36,7 +36,7 @@ func (u *User) SignUp() (*User, error) {
 }
 
 func (u *User) SignIn() (*User, error) {
-	id, err := u.repo.FindUser(u.Login, hashpasswd(u.Password))
+	id, err := u.repo.Login(u.Login, hashpasswd(u.Password))
 	if err != nil {
 		return &User{}, err
 
