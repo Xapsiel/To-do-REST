@@ -1,38 +1,31 @@
-version: '3.8'
+version: '3'
 services:
 
   backend:
-    image: xapsiel3301/todo
+    build: ./
+    command: ./main
     container_name: 'backend'  # Удалите пробел здесь
     environment:
-      - DB_HOST=postgres
-      - DB_USER=postgres  
-      - DB_PASSWORD=postgres
-      - DB_NAME=postgres
+      - PORT=8080
+      - TIMEOUT_SECONDS=200
+      - HOST=db
+      - DBPORT=5432
+      - DBUSER = postgres
+      - DBPASSWORD=qwerty
+      - DBSSLMODE = disable
+      - DBNAME = test_case
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
-    networks:
-      - net
-      
+      - db
   db:
-    image: postgres:14.1-alpine
     restart: always
+    image: postgres:14-alpine
     environment:
-      - POSTGRES_USER: postgres
-      - POSTGRES_PASSWORD: postgres
-      - PGDATA: /var/lib/postgresql/data/pgdata
-    ports:
-      - '5432:5432'
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=qwerty
     volumes:
-        - db_data:/var/lib/postgresql/data
-    networks:
-      - net
-volumes:
-  db:
-    driver: local
-
-networks:
-  net:
-    driver: bridge
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5436:5432"
+ 
