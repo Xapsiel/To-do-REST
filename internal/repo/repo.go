@@ -75,7 +75,9 @@ func init() {
 
 func (r *Repo) createDB(dbName, connstr string) error {
 	var err error
+	fmt.Println(1)
 	r.DB, err = sql.Open("postgres", connstr)
+	fmt.Println(2)
 	if err != nil {
 		return errors.New("createDB func", err.Error(), http.StatusServiceUnavailable)
 
