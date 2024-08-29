@@ -6,6 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod tidy
 
 COPY . ./
+RUN ls
 RUN go build -o /main ./cmd/main.go
 
 

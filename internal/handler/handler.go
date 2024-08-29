@@ -145,7 +145,6 @@ func SignIn(rw http.ResponseWriter, r *http.Request) {
 }
 func SignUp(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
-
 	login := r.URL.Query().Get("login")
 	password := r.URL.Query().Get("password")
 	var err error
