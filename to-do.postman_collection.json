@@ -1,0 +1,433 @@
+{
+	"info": {
+		"_postman_id": "71ec8281-8029-42c3-ae49-c624c9b56107",
+		"name": "to-do",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "32841070"
+	},
+	"item": [
+		{
+			"name": "SignUp new user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/signUp?login=testUser&password=qwerty",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"signUp"
+					],
+					"query": [
+						{
+							"key": "login",
+							"value": "testUser"
+						},
+						{
+							"key": "password",
+							"value": "qwerty"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "SignUp new user",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/signUp?login=qwerty&password=qwerty",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signUp"
+							],
+							"query": [
+								{
+									"key": "login",
+									"value": "qwerty"
+								},
+								{
+									"key": "password",
+									"value": "qwerty"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 30 Aug 2024 12:15:55 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "40"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"login\": \"qwerty\",\n    \"result\": true\n}"
+				}
+			]
+		},
+		{
+			"name": "SignUp old user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "SignUp old user",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/signUp?login=qwerty&password=qwerty",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signUp"
+							],
+							"query": [
+								{
+									"key": "login",
+									"value": "qwerty"
+								},
+								{
+									"key": "password",
+									"value": "qwerty"
+								}
+							]
+						}
+					},
+					"status": "Service Unavailable",
+					"code": 503,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 30 Aug 2024 12:16:15 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "37"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"This user already exists\"\n}"
+				}
+			]
+		},
+		{
+			"name": "SignIn real user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "SignIn real user",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/signIn?login=qwerty&password=qwerty",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signIn"
+							],
+							"query": [
+								{
+									"key": "login",
+									"value": "qwerty"
+								},
+								{
+									"key": "password",
+									"value": "qwerty"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 30 Aug 2024 12:16:32 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "40"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"login\": \"qwerty\",\n    \"result\": true\n}"
+				}
+			]
+		},
+		{
+			"name": "SignIn unreal user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "SignIn unreal user",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/signIn?login=unrealUser&password=qwerty",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signIn"
+							],
+							"query": [
+								{
+									"key": "login",
+									"value": "unrealUser"
+								},
+								{
+									"key": "password",
+									"value": "qwerty"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 30 Aug 2024 12:16:47 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "32"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Authorization error\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Add task to real user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "Add task to real user",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/add?userID=1&content=KOTOPES",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"add"
+							],
+							"query": [
+								{
+									"key": "userID",
+									"value": "1"
+								},
+								{
+									"key": "content",
+									"value": "KOTOPES"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 30 Aug 2024 12:17:02 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "47"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"content\": \"KOTOPES\",\n    \"result\": true,\n    \"taskID\": 1\n}"
+				}
+			]
+		},
+		{
+			"name": "Add task to unreal user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "Add task to unreal user",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/add?userID=199&content=KOTOPES",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"add"
+							],
+							"query": [
+								{
+									"key": "userID",
+									"value": "199"
+								},
+								{
+									"key": "content",
+									"value": "KOTOPES"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 30 Aug 2024 12:17:09 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "31"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"User was not found\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get unreal user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/get/100"
+			},
+			"response": [
+				{
+					"name": "Get unreal user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/get/100"
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 30 Aug 2024 12:17:20 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "31"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"User was not found\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get real user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "Get real user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/get/1"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 30 Aug 2024 12:17:28 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "40"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"result\": true,\n    \"tasks\": {\n        \"1\": \"KOTOPES\"\n    }\n}"
+				}
+			]
+		}
+	]
+}
