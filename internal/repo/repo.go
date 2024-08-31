@@ -39,7 +39,6 @@ func New() *Repo {
 	config.name = en.GetEnvOrDefault("DBNAME", "test_case")
 	config.password = en.GetEnvOrDefault("DBPASSWORD", "postgres")
 	config.sslmode = en.GetEnvOrDefault("DBSSLMODE", "disable")
-	fmt.Println(config)
 	return &Repo{DB: &sql.DB{}, configDB: configDB{host: config.host, port: config.port, name: config.name, user: config.user, password: config.password, sslmode: config.sslmode}}
 }
 
@@ -68,6 +67,7 @@ func SetupDB() {
 			log.Println(e.Print())
 		}
 		return
+
 	}
 	query = "CREATE TABLE IF NOT EXISTS tasks(id SERIAL PRIMARY KEY,userid INTEGER REFERENCES users (id) NOT NULL,content TEXT NOT NULL) "
 	err = repoobj.createTable(repoobj.name, connstr, query)
